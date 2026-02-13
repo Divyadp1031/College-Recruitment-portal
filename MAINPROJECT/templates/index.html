@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Recruitment Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <i class="fas fa-graduation-cap"></i>
+                <span>College Recruitment Portal</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/">Home</a></li>
+                {% if session.user_id %}
+                    {% if session.user_type == 'student' %}
+                        <li><a href="/dashboard-student">Dashboard</a></li>
+                        <li><a href="/job-listings">Jobs</a></li>
+                        <li><a href="/logout">Logout</a></li>
+                    {% else %}
+                        <li><a href="/dashboard-company">Dashboard</a></li>
+                        <li><a href="/filter-candidates">Find Candidates</a></li>
+                        <li><a href="/logout">Logout</a></li>
+                    {% endif %}
+                {% else %}
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/student-register" class="btn-primary">Register as Student</a></li>
+                    <li><a href="/company-register" class="btn-primary">Register as Company</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Find Your Dream Job</h1>
+            <p>Connect with top companies and secure your future</p>
+            {% if not session.user_id %}
+                <div class="hero-buttons">
+                    <a href="/student-register" class="btn btn-primary">Register as Student</a>
+                    <a href="/company-register" class="btn btn-secondary">Register as Company</a>
+                </div>
+            {% else %}
+                {% if session.user_type == 'student' %}
+                    <a href="/job-listings" class="btn btn-primary">Explore Jobs</a>
+                {% else %}
+                    <a href="/filter-candidates" class="btn btn-primary">Find Candidates</a>
+                {% endif %}
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2>Why Choose Us?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-search"></i>
+                    <h3>Advanced Filtering</h3>
+                    <p>Filter jobs by skills, CGPA, department, and more</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-briefcase"></i>
+                    <h3>Quality Jobs</h3>
+                    <p>Access opportunities from verified companies</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Find Talent</h3>
+                    <p>Companies can discover and shortlist talented students</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Track Progress</h3>
+                    <p>Monitor applications and build your profile</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2026 College Recruitment Portal. All rights reserved.</p>
+    </footer>
+</body>
+</html>

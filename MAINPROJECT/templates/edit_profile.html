@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <i class="fas fa-graduation-cap"></i>
+                <span>College Recruitment Portal</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/dashboard-student">Dashboard</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="form-container">
+        <div class="form-box">
+            <h2>Edit Your Profile</h2>
+            <form method="post" enctype="multipart/form-data" class="registration-form">
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" name="name" value="{{ student[2] or '' }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="tel" name="phone" value="{{ student[3] or '' }}">
+                </div>
+
+                <div class="form-group">
+                    <label>Department</label>
+                    <input type="text" name="department" placeholder="e.g., Computer Science" value="{{ student[4] or '' }}">
+                </div>
+
+                <div class="form-group">
+                    <label>Year</label>
+                    <select name="year">
+                        <option value="">Select Year</option>
+                        <option value="1" {% if student[5] == 1 %}selected{% endif %}>1st Year</option>
+                        <option value="2" {% if student[5] == 2 %}selected{% endif %}>2nd Year</option>
+                        <option value="3" {% if student[5] == 3 %}selected{% endif %}>3rd Year</option>
+                        <option value="4" {% if student[5] == 4 %}selected{% endif %}>4th Year</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>CGPA *</label>
+                    <input type="number" name="cgpa" step="0.01" min="0" max="10" value="{{ student[6] or '' }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Skills (comma-separated) *</label>
+                    <input type="text" name="skills" placeholder="e.g., Python, Django, SQL, JavaScript" value="{{ student[7] or '' }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Projects</label>
+                    <textarea name="projects" rows="4" placeholder="Describe your projects...">{{ student[8] or '' }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Bio</label>
+                    <textarea name="bio" rows="4" placeholder="Write a short bio about yourself...">{{ student[10] or '' }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Resume (PDF / DOC)</label>
+                    {% if student|length > 9 and student[9] %}
+                        <div class="existing-resume">
+                            <a href="{{ url_for('static', filename='resumes/' ~ student[9]) }}" target="_blank">View current resume</a>
+                        </div>
+                    {% endif %}
+                    <input type="file" name="resume" accept=".pdf,.doc,.docx">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a href="/dashboard-student" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 College Recruitment Portal. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter Candidates</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <i class="fas fa-graduation-cap"></i>
+                <span>College Recruitment Portal</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/dashboard-company">Dashboard</a></li>
+                <li><a href="/filter-candidates">Find Candidates</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="filter-section">
+            <h3>Filter Candidates</h3>
+            <form method="get" class="filter-form">
+                <div class="filter-group">
+                    <label>Job Role</label>
+                    <select name="role">
+                        <option value="">All Roles</option>
+                        {% for job in company_jobs %}
+                            <option value="{{ job[2] }}">{{ job[2] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Required Skills</label>
+                    <input type="text" name="skills" placeholder="e.g., Python, Django" value="{{ request.args.get('skills', '') }}">
+                </div>
+
+                <div class="filter-group">
+                    <label>Min CGPA</label>
+                    <input type="number" name="min_cgpa" placeholder="e.g., 7.0" step="0.01" value="{{ request.args.get('min_cgpa', '') }}">
+                </div>
+
+                <div class="filter-group">
+                    <label>Department</label>
+                    <input type="text" name="department" placeholder="e.g., Computer Science" value="{{ request.args.get('department', '') }}">
+                </div>
+
+                <div class="filter-group">
+                    <label>Job Description Keywords</label>
+                    <input type="text" name="job_description" placeholder="Search job descriptions..." value="{{ request.args.get('job_description', '') }}">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Filter</button>
+                <a href="/filter-candidates" class="btn btn-secondary">Clear</a>
+            </form>
+        </div>
+
+        <div class="candidates-section">
+            <h2>Available Candidates</h2>
+            
+            {% if students %}
+                <div class="candidates-grid">
+                    {% for student in students %}
+                        <div class="candidate-card">
+                            <div class="candidate-header">
+                                <div class="candidate-avatar">{{ student[2][0].upper() if student[2] else 'S' }}</div>
+                                <div>
+                                    <h3>{{ student[2] }}</h3>
+                                    <p class="candidate-info">{{ student[4] }} | Year {{ student[5] or 'N/A' }}</p>
+                                </div>
+                            </div>
+
+                            <div class="candidate-details">
+                                <div class="detail-item">
+                                    <strong>CGPA:</strong> <span class="cgpa-badge">{{ student[6] }}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Skills:</strong>
+                                    <div class="skills-list">
+                                        {% set skills_text = student[7] if student|length > 7 else '' %}
+                                        {% if skills_text %}
+                                            {% for skill in skills_text.split(',') %}
+                                                <span class="skill-tag">{{ skill.strip() }}</span>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% if student|length > 9 and student[9] %}
+                                    <div class="detail-item">
+                                        <strong>Resume:</strong>
+                                        <a href="{{ url_for('static', filename='resumes/' ~ student[9]) }}" target="_blank">View Resume</a>
+                                    </div>
+                                {% endif %}
+                                {% if student[9] %}
+                                    <div class="detail-item">
+                                        <strong>Email:</strong> <span>{{ student[9] }}</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="candidate-actions">
+                                <a href="#" class="btn btn-primary btn-small" onclick="viewProfile(student[0])">View Profile</a>
+                                <button class="btn btn-secondary btn-small" onclick="shortlistStudent(student[0])">
+                                    <i class="fas fa-star"></i> Shortlist
+                                </button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <p>No candidates found matching your criteria</p>
+                    <a href="/filter-candidates" class="btn btn-primary">Clear Filters</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 College Recruitment Portal. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function shortlistStudent(studentId) {
+            fetch(`/shortlist-student/${studentId}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Student shortlisted successfully!');
+                        location.reload();
+                    } else if (data.status === 'already_shortlisted') {
+                        alert('This student is already shortlisted!');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function viewProfile(studentId) {
+            alert(`Viewing profile for student ID: ${studentId}`);
+        }
+    </script>
+</body>
+</html>

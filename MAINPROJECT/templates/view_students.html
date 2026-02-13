@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Filtered Students</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="table-container">
+        <h2>Filtered Students (Matching Latest Job Requirements)</h2>
+        
+        {% if students %}
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Skills</th>
+                    <th>CGPA</th>
+                    <th>Resume</th>
+                </tr>
+                {% for student in students %}
+                    <tr>
+                        <td>{{ student[0] }}</td>
+                        <td>{{ student[2] }}</td>
+                        <td>{{ student[9] or '' }}</td>
+                        <td>{{ student[7] or '' }}</td>
+                        <td>{{ student[6] or '' }}</td>
+                        <td>
+                            {% if student|length > 9 and student[9] %}
+                                <a href="{{ url_for('static', filename='resumes/' ~ student[9]) }}" target="_blank">View</a>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <div class="no-results">
+                <p>No students found matching the job requirements.</p>
+            </div>
+        {% endif %}
+        
+        <a href="/" class="back-link">Back to Home</a>
+    </div>
+</body>
+</html>

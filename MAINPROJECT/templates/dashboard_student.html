@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <i class="fas fa-graduation-cap"></i>
+                <span>College Recruitment Portal</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/dashboard-student">Dashboard</a></li>
+                <li><a href="/job-listings">Job Listings</a></li>
+                <li><a href="/edit-profile">Edit Profile</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container dashboard-container">
+        <div class="sidebar">
+            <div class="profile-card">
+                <div class="profile-avatar">{{ student[2][0].upper() if student[2] else 'S' }}</div>
+                <h3>{{ student[2] or 'Student' }}</h3>
+                <p class="profile-info">{{ student[3] if student[3] else 'Computer Science' }}</p>
+                <p class="profile-cgpa">CGPA: {{ student[6] or 0.0 }}</p>
+                <a href="/edit-profile" class="btn btn-primary btn-block">Edit Profile</a>
+            </div>
+
+            <div class="card">
+                <h4>Skills</h4>
+                <div class="skills-list">
+                    {% set skills_text = student[7] if student|length > 7 else '' %}
+                    {% if skills_text %}
+                        {% for skill in (skills_text or '').split(',') %}
+                            <span class="skill-tag">{{ skill.strip() }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <p class="empty-message">No skills added yet</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card">
+                <h4>Projects</h4>
+                {% if student|length > 8 and student[8] %}
+                    <p>{{ student[8] }}</p>
+                {% else %}
+                    <p class="empty-message">No projects added yet</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Applications</h2>
+                    <a href="/job-listings" class="btn btn-primary">Find Jobs</a>
+                </div>
+
+                {% if applications %}
+                    <div class="applications-list">
+                        {% for app in applications %}
+                            <div class="application-item">
+                                <div class="app-info">
+                                    <h4>{{ app[2] }}</h4>
+                                    <p class="company-name"><i class="fas fa-building"></i> {{ app[9] }}</p>
+                                    <p class="skills">{{ app[4] }}</p>
+                                    <div class="app-details">
+                                        <span><strong>Min CGPA:</strong> {{ app[5] }}</span>
+                                        <span><strong>Type:</strong> {{ app[8] }}</span>
+                                        <span><strong>Location:</strong> {{ app[11] }}</span>
+                                    </div>
+                                </div>
+                                <div class="app-status">
+                                    <span class="status-badge status-{{ app[0]|lower }}">{{ app[0]|capitalize }}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-briefcase"></i>
+                        <p>You haven't applied to any jobs yet</p>
+                        <a href="/job-listings" class="btn btn-primary">Start Exploring Jobs</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 College Recruitment Portal. All rights reserved.</p>
+    </footer>
+</body>
+</html>

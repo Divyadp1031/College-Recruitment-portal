@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Listings</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <i class="fas fa-graduation-cap"></i>
+                <span>College Recruitment Portal</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/dashboard-student">Dashboard</a></li>
+                <li><a href="/job-listings">Job Listings</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="filter-section">
+            <h3>Filter Jobs</h3>
+            <form method="get" class="filter-form">
+                <div class="filter-group">
+                    <label>Role</label>
+                    <input type="text" name="role" placeholder="e.g., Developer" value="{{ request.args.get('role', '') }}">
+                </div>
+
+                <div class="filter-group">
+                    <label>Skills</label>
+                    <input type="text" name="skills" placeholder="e.g., Python, Django" value="{{ request.args.get('skills', '') }}">
+                </div>
+
+                <div class="filter-group">
+                    <label>Min CGPA</label>
+                    <input type="number" name="min_cgpa" placeholder="e.g., 7.0" step="0.01" value="{{ request.args.get('min_cgpa', '') }}">
+                </div>
+
+                <div class="filter-group">
+                    <label>Department</label>
+                    <input type="text" name="department" placeholder="e.g., Computer Science" value="{{ request.args.get('department', '') }}">
+                </div>
+
+                <div class="filter-group">
+                    <label>Job Type</label>
+                    <select name="job_type">
+                        <option value="">All Types</option>
+                        <option value="Full-time">Full-time</option>
+                        <option value="Internship">Internship</option>
+                        <option value="Part-time">Part-time</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+
+        <div class="jobs-section">
+            <h2>Available Jobs</h2>
+            
+            {% if jobs %}
+                <div class="jobs-grid">
+                    {% for job in jobs %}
+                        <div class="job-card">
+                            <div class="job-header">
+                                <h3>{{ job[2] }}</h3>
+                                <span class="job-type-badge">{{ job[9] }}</span>
+                            </div>
+                            
+                            <p class="company-name"><i class="fas fa-building"></i> {{ job[13] }}</p>
+                            
+                            <p class="job-description">{{ job[3][:100] }}...</p>
+                            
+                            <div class="job-requirements">
+                                <span><strong>Role:</strong> {{ job[3] }}</span>
+                                <span><strong>Skills:</strong> {{ job[4] }}</span>
+                                <span><strong>Min CGPA:</strong> {{ job[5] }}</span>
+                                <span><strong>Dept:</strong> {{ job[7] }}</span>
+                            </div>
+                            
+                            <div class="job-footer">
+                                <span class="location"><i class="fas fa-map-marker-alt"></i> {{ job[11] }}</span>
+                                <a href="/job/{{ job[0] }}" class="btn btn-primary">View Details</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <p>No jobs found matching your criteria</p>
+                    <a href="/job-listings" class="btn btn-primary">Clear Filters</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 College Recruitment Portal. All rights reserved.</p>
+    </footer>
+</body>
+</html>

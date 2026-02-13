@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <i class="fas fa-graduation-cap"></i>
+                <span>College Recruitment Portal</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/dashboard-company">Dashboard</a></li>
+                <li><a href="/post-job">Post Job</a></li>
+                <li><a href="/filter-candidates">Find Candidates</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container dashboard-container">
+        <div class="sidebar">
+            <div class="company-card">
+                <div class="company-logo">{{ company[2][0].upper() }}</div>
+                <h3>{{ company[2] }}</h3>
+                <p class="company-info">{{ company[4] or 'Contact not provided' }}</p>
+                <a href="#" class="btn btn-primary btn-block">Edit Company</a>
+            </div>
+
+            <div class="stats-card">
+                <div class="stat-item">
+                    <h4>{{ jobs|length }}</h4>
+                    <p>Jobs Posted</p>
+                </div>
+                <div class="stat-item">
+                    <h4>{{ total_applications }}</h4>
+                    <p>Applications</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Posted Jobs</h2>
+                    <a href="/post-job" class="btn btn-primary">Post New Job</a>
+                </div>
+
+                {% if jobs %}
+                    <div class="jobs-list">
+                        {% for job in jobs %}
+                            <div class="job-item">
+                                <div class="job-info">
+                                    <h4>{{ job[2] }}</h4>
+                                    <p class="job-role">{{ job[3] }}</p>
+                                    <div class="job-meta">
+                                        <span><i class="fas fa-map-marker-alt"></i> {{ job[12] }}</span>
+                                        <span><i class="fas fa-briefcase"></i> {{ job[9] }}</span>
+                                        <span><i class="fas fa-graduation-cap"></i> Min CGPA: {{ job[5] }}</span>
+                                    </div>
+                                </div>
+                                <div class="job-actions">
+                                    <a href="/filter-candidates?role={{ job[3] }}" class="btn btn-secondary">View Applicants</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-briefcase"></i>
+                        <p>You haven't posted any jobs yet</p>
+                        <a href="/post-job" class="btn btn-primary">Post Your First Job</a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="card">
+                <h2>Quick Actions</h2>
+                <div class="actions-grid">
+                    <a href="/post-job" class="action-item">
+                        <i class="fas fa-plus-circle"></i>
+                        <h4>Post a Job</h4>
+                        <p>Create a new job posting</p>
+                    </a>
+                    <a href="/filter-candidates" class="action-item">
+                        <i class="fas fa-search"></i>
+                        <h4>Find Candidates</h4>
+                        <p>Search and filter candidates</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 College Recruitment Portal. All rights reserved.</p>
+    </footer>
+</body>
+</html>
